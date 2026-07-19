@@ -3,7 +3,9 @@ import { AppError, ErrorResponseBody } from "../types/index.js";
 import 'pino-http'; 
 import { config } from "../config/index.js";
 
-export function errorHandler(err: unknown, req: Request, res: Response, next: NextFunction){
+export function errorHandler(err: unknown, req: Request, res: Response, 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    next: NextFunction){
     const isAppError = err instanceof AppError
     const statusCode = isAppError ? err.statusCode : 500;
     const code = isAppError ? err.code : 'INTERNAL_ERROR';
