@@ -17,7 +17,7 @@ const UserScehma = new Schema(
     workspaceId: {
       type: Schema.Types.ObjectId,
       ref: 'Workspace',
-      reuqired: true,
+      required: true,
       index: true,
     },
     role: {
