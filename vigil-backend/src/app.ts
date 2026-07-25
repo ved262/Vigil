@@ -7,6 +7,7 @@ import { pinoHttp } from 'pino-http';
 import { generateRequestId } from './utils/requestId.js';
 import { logger } from './utils/logger.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { getDatabaseStatus } from './config/database.js';
 
 export function createApp(): Application {
   const app = express();
@@ -33,11 +34,14 @@ export function createApp(): Application {
   );
 
   app.get('/api/health', (req, res) => {
-    res.status(200).json({
-      status: 'ok',
-      uptime: Math.floor(process.uptime()),
+    const dbStatus = getDatabaseStatus();
+    const isHealthy = dbStatus === 'connected';
+    res.status(isHealthy ? 200 : 503).json({
+      status: isHealthy ? 'ok' : 'degraded',
+      uptimesECONDS: Math.floor(process.uptime()),
       version: config.APP_VERSION,
       environment: config.NODE_ENV,
+      database: dbStatus,
     });
   });
 
