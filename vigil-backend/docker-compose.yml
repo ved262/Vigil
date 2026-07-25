@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+  backend:
+    build: .
+    ports:
+      - '3000:3000'
+    env_file: .env
+    environment: 
+      MONGO_URI: mongodb://localhost:27017/vigil
+      REDIS_URL: redis://redis:6379
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - mongo
+      - redis
+    command: npm run dev
+
+  mongo:
+    image: mongo:7
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+  
+  mongo-express:
+    image: mongo-express:1.0
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+    depends_on:
+      - mongo
+  
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    ports:
+      - '8082:8081'
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    depends_on:
+      - redis
+
+volumes:
+  mongo-data:
