@@ -2,7 +2,7 @@ import { UserModel } from '../models/Users.js';
 import { WorkspaceModel } from '../models/Workspace.js';
 import { AppError } from '../types/index.js';
 import bcrypt from 'bcrypt';
-import { signAccessToken, signRefreshToken } from '../utils/jwt.js';
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 import mongoose from 'mongoose';
 
 const BCRYPT_ROUNDS = 12;
@@ -27,6 +27,22 @@ export interface AuthResult {
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface RefreshResult {
+  accessToken: string;
+}
+
+export interface MeResult {
+  id: string;
+  email: string;
+  role: string;
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    plan: string;
+  };
 }
 
 async function generateUniqueSlug(workspaceName: string) {
@@ -131,6 +147,46 @@ export async function login(input: LoginInput) {
       email: user.email,
       workspaceId: user.workspaceId.toString(),
       role: user.role,
+    },
+  };
+}
+
+export function refresh(refreshToken: string): RefreshResult {
+  let payload;
+  try {
+    payload = verifyRefreshToken(refreshToken);
+  } catch {
+    throw new AppError('Invalid or expired refresh token', 401, 'INVALID_REFRESH_TOKEN');
+  }
+
+  const accessToken = signAccessToken({
+    userId: payload.userId,
+    workspaceId: payload.workspaceId,
+  });
+
+  return { accessToken };
+}
+
+export async function getMe(userId: string): Promise<MeResult> {
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    throw new AppError('User not found', 404, 'USER_NOT_FOUND');
+  }
+
+  const workspace = await WorkspaceModel.findById(user.workspaceId);
+  if (!workspace) {
+    throw new AppError('Workspace not found', 404, 'WORKSPACE_NOT_FOUND');
+  }
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    role: user.role,
+    workspace: {
+      id: workspace._id.toString(),
+      name: workspace.name,
+      slug: workspace.slug,
+      plan: workspace.plan,
     },
   };
 }
