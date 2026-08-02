@@ -1,7 +1,7 @@
 import rateLimit from 'express-rate-limit';
 import { AppError } from '../types/index.js';
 
-export const authRatelimiter = rateLimit({
+export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
   standardHeaders: true,
