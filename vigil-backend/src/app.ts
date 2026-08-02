@@ -8,6 +8,7 @@ import { generateRequestId } from './utils/requestId.js';
 import { logger } from './utils/logger.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { getDatabaseStatus } from './config/database.js';
+import { authRouter } from './routes/auth.js';
 
 export function createApp(): Application {
   const app = express();
@@ -44,6 +45,8 @@ export function createApp(): Application {
       database: dbStatus,
     });
   });
+
+  app.use('/api/v1/auth', authRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
