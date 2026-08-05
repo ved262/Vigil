@@ -18,7 +18,7 @@ const workspaceSchema = new Schema(
     ownerId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: false,
     },
     plan: {
       type: String,

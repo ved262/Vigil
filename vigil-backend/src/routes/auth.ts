@@ -25,7 +25,12 @@ const loginSchema = z.object({
   password: z.string().min(1),
 });
 
-router.post('/register', authRateLimiter, validate(registerSchema), asyncHandler(registerController));
+router.post(
+  '/register',
+  authRateLimiter,
+  validate(registerSchema),
+  asyncHandler(registerController),
+);
 router.post('/login', authRateLimiter, validate(loginSchema), asyncHandler(loginController));
 router.post('/refresh', refreshController);
 router.post('/logout', logoutController);
