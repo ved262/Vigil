@@ -6,7 +6,7 @@ export function validate(schema: ZodType) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
-      const details = treeifyError(result.error).errors;
+      const details = result.error?.issues;
       next(new AppError('Validation failed', 400, 'VALIDATION_ERROR', details));
       return;
     }

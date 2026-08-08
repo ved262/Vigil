@@ -30,7 +30,7 @@ router.post('/', validate(createServiceSchema), asyncHandler(createServiceCotrol
 router.get('/', asyncHandler(listServiceController));
 router.get('/:id', asyncHandler(getServiceController));
 router.patch('/:id', validate(updateServiceSchema), asyncHandler(updateServiceController));
-router.delete(':id', asyncHandler(deleteServiceController));
+router.delete('/:id', asyncHandler(deleteServiceController));
 router.post('/:id/check', asyncHandler(checkServiceController));
 
 export { router as servicesRouter };

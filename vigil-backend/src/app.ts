@@ -48,7 +48,7 @@ export function createApp(): Application {
   });
 
   app.use('/api/v1/auth', authRouter);
-  app.use('/api/v1/service', servicesRouter);
+  app.use('/api/v1/services', servicesRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
