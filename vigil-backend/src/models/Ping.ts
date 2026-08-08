@@ -1,5 +1,4 @@
 import { InferSchemaType, model, Schema } from 'mongoose';
-import { required } from 'zod/mini';
 
 const pingSchema = new Schema(
   {
@@ -42,4 +41,4 @@ const pingSchema = new Schema(
 );
 
 export type Ping = InferSchemaType<typeof pingSchema>;
-export const pingModel = model('Ping', pingSchema);
+export const PingModel = model('Ping', pingSchema);
